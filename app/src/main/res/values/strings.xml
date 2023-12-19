@@ -1,0 +1,16 @@
+<resources>
+    <!--start screen-->
+    <string name="app_name">slots</string>
+    <string name="pic_desc">Казино</string>
+    <string name="hello_message">Ебаный рот этого казино</string>
+    <string name="game_start_button">Начать игру</string>
+
+    <!--game screen-->
+    <string name="slotImgDescr">slot</string>
+    <string name="start">Начать</string>
+    <string name="jackpot">Джекпот</string>
+    <string name="small_jackpot">Джекпот поменьше</string>
+    <string name="loss">Проигрыш</string>
+
+
+</resources>
