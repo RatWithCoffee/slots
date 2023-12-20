@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,9 +30,9 @@ public class GameActivity extends AppCompatActivity implements EventEnd, View.On
     private static final int TIME_BETWEEN_ROTATIONS = 1000;
 
 
-    private OneSlot[] imageScrollView;
     private Slots slots;
 
+    private OneSlot[] imageScrollView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,9 +44,9 @@ public class GameActivity extends AppCompatActivity implements EventEnd, View.On
         imageScrollView = new OneSlot[3];
         for (int i = 0; i < imageScrollView.length; i++) {
             imageScrollView[i] = findViewById(imageIds[i]);
-            imageScrollView[i].setRotationEndHandler(GameActivity.this);
+            imageScrollView[i].setRotationEndHandler(this);
         }
-        slots = new Slots();
+//        slots = new Slots(slotsView, this);
 
 
         Button startEndButton = findViewById(R.id.button_st_end);
@@ -56,6 +57,7 @@ public class GameActivity extends AppCompatActivity implements EventEnd, View.On
 
     private void createToolBar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
+//        setWindowActionBar();
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);

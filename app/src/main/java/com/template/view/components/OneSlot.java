@@ -53,7 +53,7 @@ public class OneSlot extends FrameLayout {
 
     // инициализация обьекта класса
     private void init(Context context) {
-        LayoutInflater.from(context).inflate(R.layout.image_view_scrolling, this);
+        LayoutInflater.from(context).inflate(R.layout.one_slot, this);
         currentImage = getRootView().findViewById(R.id.current_image);
         nextImage = getRootView().findViewById(R.id.next_image);
         nextImage.setTranslationY(getHeight());
