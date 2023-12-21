@@ -1,21 +1,26 @@
 package com.template.view.components;
 
 import android.content.Context;
-import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
 
-import com.template.EventEnd;
 import com.template.R;
-import com.template.view.activities.GameActivity;
+import com.template.model.RotationResult;
 
-public class Slots extends LinearLayout {
-    private  OneSlot[] slots;
+public class Slots extends LinearLayout implements OneSlot.RotationEndListener {
+    private OneSlot[] slots;
+
+    private int numberOfStoppedSlots;
+
+   private RoundEndListener onRoundEndListener;
+
+    public interface RoundEndListener {
+        void onRoundEnd(RotationResult rotationResult, String messageId);
+    }
+
 
     public Slots(Context context) {
         super(context);
@@ -44,12 +49,38 @@ public class Slots extends LinearLayout {
         slots = new OneSlot[3];
         for (int i = 0; i < slots.length; i++) {
             slots[i] = findViewById(imageIds[i]);
+            slots[i].setRotationEndHandler(this);
         }
     }
 
-    public void setRotationEndHandler(EventEnd eventEnd) {
-        for (OneSlot slot : slots) {
-            slot.setRotationEndHandler(eventEnd);
+    public void startRotation() {
+        for (OneSlot scrollView : slots) {
+            scrollView.startRotation();
+        }
+    }
+
+    public void setOnRoundEnd(RoundEndListener roundEndListener) {
+        this.onRoundEndListener = roundEndListener;
+    }
+
+
+    // обработка завершения вращения одного слота
+    @Override
+    public void onRotationEnd() {
+        numberOfStoppedSlots++;
+        // если все три слота закончили вращение
+        if (slots.length == numberOfStoppedSlots) {
+            if (slots[0].getTag().equals(slots[1].getTag()) && slots[0].getTag().equals(slots[2].getTag())) {
+                onRoundEndListener.onRoundEnd(RotationResult.JACKPOT, getResources().getString(R.string.jackpot));
+            } else if (slots[0].getTag().equals(slots[1].getTag())
+                    || slots[0].getTag().equals(slots[2].getTag())
+                    || slots[1].getTag().equals(slots[2].getTag())
+            ) {
+                onRoundEndListener.onRoundEnd(RotationResult.SMALL_JACKPOT, getResources().getString(R.string.small_jackpot));
+            } else {
+                onRoundEndListener.onRoundEnd(RotationResult.LOSS, getResources().getString(R.string.loss));
+            }
+            numberOfStoppedSlots = 0;
         }
     }
 

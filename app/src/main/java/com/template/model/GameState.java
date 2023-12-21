@@ -23,12 +23,19 @@ public class GameState {
         return sum < bet;
     }
 
-    public void decreaseSum() {
-        sum -= bet;
-    }
 
-    public void increaseSum() {
-        sum += bet;
+    public void changeSum(RotationResult rotationResult) {
+        switch (rotationResult) {
+            case JACKPOT:
+                sum += 2 * bet;
+                break;
+            case SMALL_JACKPOT:
+                sum += bet;
+                break;
+            case LOSS:
+                sum -= bet;
+                break;
+        }
     }
 
 

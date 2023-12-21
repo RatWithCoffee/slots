@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.template.EventEnd;
 import com.template.R;
 
 import java.util.Random;
@@ -20,7 +19,7 @@ public class OneSlot extends FrameLayout {
     // время за которое происходит одно вращение
     private static final int ANIMATION_DURATION = 300;
     // количество остановившихся слотов
-    private static int numberOfStoppedSlots;
+//    private static int numberOfStoppedSlots;
 
     private static final int[] images = {R.drawable.slot1, R.drawable.slot2, R.drawable.slot3, R.drawable.slot4,
             R.drawable.slot5, R.drawable.slot6};
@@ -30,8 +29,12 @@ public class OneSlot extends FrameLayout {
     public final Random RANDOM = new Random();
 
     // событие, происходящие по завершению вращения
-    private EventEnd rotationEndHandler;
+    private RotationEndListener rotationEndListener;
     private int currRotation = 0;
+
+    interface RotationEndListener {
+        void onRotationEnd();
+    }
 
     public OneSlot(@NonNull Context context) {
         super(context);
@@ -64,9 +67,6 @@ public class OneSlot extends FrameLayout {
         int imageIndex = RANDOM.nextInt(images.length);
         int numOfRotation = RANDOM.nextInt(4) + 5000 / ANIMATION_DURATION;
 
-        // сбрасываем счетчик слотов, закончивших вращение
-        numberOfStoppedSlots = 0;
-
         setImage(nextImage, imageIndex);
         rotate(imageIndex, numOfRotation);
     }
@@ -93,8 +93,7 @@ public class OneSlot extends FrameLayout {
                         } else { // останавливаем вращение
                             currRotation = 0;
                             setImage(nextImage, imageIndex);
-                            numberOfStoppedSlots++;
-                            rotationEndHandler.eventEnd(numberOfStoppedSlots);
+                            rotationEndListener.onRotationEnd();
                         }
 
                     }
@@ -120,8 +119,8 @@ public class OneSlot extends FrameLayout {
     }
 
     // устанавливает событие, происходящие по завершению вращения
-    public void setRotationEndHandler(EventEnd eventEnd) {
-        this.rotationEndHandler = eventEnd;
+    public void setRotationEndHandler(RotationEndListener rotationEndListener) {
+        this.rotationEndListener = rotationEndListener;
     }
 
 }
