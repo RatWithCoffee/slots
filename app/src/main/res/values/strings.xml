@@ -12,6 +12,9 @@
     <string name="small_jackpot">Джекпот поменьше</string>
     <string name="loss">Проигрыш</string>
     <string name="end_rotation_button">Остановить вращение</string>
+    <string name="replay_button">Сыграть еще раз</string>
+    <string name="end_game">Закончить игру</string>
+    <string name="game_over_message">Вы проиграли</string>
 
 
 </resources>

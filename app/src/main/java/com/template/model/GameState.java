@@ -2,7 +2,7 @@ package com.template.model;
 
 // описывает состояние текущей игры
 public class GameState {
-    public static final double defaultInitSum = 1000;
+    public static final double defaultInitSum = 100;
     public static final double defaultInitBet = 100;
 
 
@@ -45,5 +45,9 @@ public class GameState {
 
     public double getBet() {
         return bet;
+    }
+
+    public void restartGame() {
+        sum = defaultInitSum;
     }
 }

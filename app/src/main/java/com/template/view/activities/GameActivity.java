@@ -1,9 +1,11 @@
 package com.template.view.activities;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -15,11 +17,12 @@ import com.template.R;
 import com.template.model.GameState;
 import com.template.model.RotationResult;
 import com.template.view.components.Slots;
+import com.template.view.dialogs.DialogWindow;
 
 import java.text.DecimalFormat;
 import java.util.Objects;
 
-public class GameActivity extends AppCompatActivity implements Slots.RoundEndListener {
+public class GameActivity extends AppCompatActivity implements Slots.RoundEndListener, DialogWindow.GameRestartListener {
 
     private final GameState state = new GameState();
     private final static DecimalFormat REAL_FORMATTER = new DecimalFormat("0.###");
@@ -54,6 +57,9 @@ public class GameActivity extends AppCompatActivity implements Slots.RoundEndLis
 
 //            stopRotation = false -> пользователь захотел остановить игру
 //            stopRotation = true -> пользователь захотел начать игру
+
+//            если во время вращения пользователь остановил игру,
+//            то приложение не дает ему во время того же вращения игру снова начать
             if (isRotating && !stopRotation) {
                 return;
             }
@@ -94,8 +100,10 @@ public class GameActivity extends AppCompatActivity implements Slots.RoundEndLis
 
 
         if (state.isGameOver()) {
-//               показываем модальное окно с выбором выйти из игры / закинуть деньги
-//                resultTextView.setText("Вы проиграли");
+            AlertDialog dialog = DialogWindow.getDialog(this, this);
+            dialog.show();
+            isRotating = false;
+            return;
         }
 
 //        пользователь нажал на кнопку остановки
@@ -109,13 +117,21 @@ public class GameActivity extends AppCompatActivity implements Slots.RoundEndLis
 
 
     public void startRotation() {
-        Button startEndButton = findViewById(R.id.button_st_end);
-        startEndButton.setEnabled(true);
-
         isRotating = true;
         slots.startRotation();
         TextView resultTextView = findViewById(R.id.result_textview);
         resultTextView.setVisibility(View.INVISIBLE);
     }
 
+    @Override
+    public void onGameRestart() {
+        Button startEndButton = findViewById(R.id.button_st_end);
+        startEndButton.setText(R.string.start_rotation_button);
+        state.restartGame();
+        TextView moneyTextView = findViewById(R.id.textView_money);
+        moneyTextView.setText(REAL_FORMATTER.format(state.getSum()));
+        TextView resultTextView = findViewById(R.id.result_textview);
+        resultTextView.setVisibility(View.INVISIBLE);
+        Log.i("restart", "aaa");
+    }
 }
