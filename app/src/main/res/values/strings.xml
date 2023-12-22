@@ -6,11 +6,12 @@
     <string name="game_start_button">Начать игру</string>
 
     <!--game screen-->
-    <string name="slotImgDescr">slot</string>
-    <string name="start">Начать</string>
+    <string name="slot_img_descr">slot</string>
+    <string name="start_rotation_button">Начать</string>
     <string name="jackpot">Джекпот</string>
     <string name="small_jackpot">Джекпот поменьше</string>
     <string name="loss">Проигрыш</string>
+    <string name="end_rotation_button">Остановить вращение</string>
 
 
 </resources>

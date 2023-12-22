@@ -3,6 +3,7 @@ package com.template.view.activities;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SystemClock;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -18,7 +19,7 @@ import com.template.view.components.Slots;
 import java.text.DecimalFormat;
 import java.util.Objects;
 
-public class GameActivity extends AppCompatActivity implements View.OnClickListener, Slots.RoundEndListener {
+public class GameActivity extends AppCompatActivity implements Slots.RoundEndListener {
 
     private final GameState state = new GameState();
     private final static DecimalFormat REAL_FORMATTER = new DecimalFormat("0.###");
@@ -26,6 +27,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private static final int TIME_BETWEEN_ROTATIONS = 1500;
 
     private Slots slots;
+
+    private boolean stopRotation = false;
+    private boolean isRotating = false;
+
+    private long mLastClickTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +45,30 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         slots.setOnRoundEnd(this);
 
         Button startEndButton = findViewById(R.id.button_st_end);
-        startEndButton.setOnClickListener(this);
+        startEndButton.setOnClickListener(v -> {
+            if (SystemClock.elapsedRealtime() - mLastClickTime < 1000) {
+                return;
+            }
+            mLastClickTime = SystemClock.elapsedRealtime();
+
+
+//            stopRotation = false -> пользователь захотел остановить игру
+//            stopRotation = true -> пользователь захотел начать игру
+            if (isRotating && !stopRotation) {
+                return;
+            }
+
+            stopRotation = !stopRotation;
+            if (stopRotation) {
+                startEndButton.setText(R.string.end_rotation_button);
+                startRotation();
+            } else {
+                startEndButton.setText(R.string.start_rotation_button);
+
+            }
+
+
+        });
     }
 
 
@@ -67,22 +96,23 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         if (state.isGameOver()) {
 //               показываем модальное окно с выбором выйти из игры / закинуть деньги
 //                resultTextView.setText("Вы проиграли");
-
         }
 
-
+//        пользователь нажал на кнопку остановки
+        if (!stopRotation) {
+            isRotating = false;
+            return;
+        }
 
         new Handler(Looper.getMainLooper()).postDelayed(this::startRotation, TIME_BETWEEN_ROTATIONS);
     }
 
 
-
-
-    @Override
-    public void onClick(View view) {
-        startRotation();
-    }
     public void startRotation() {
+        Button startEndButton = findViewById(R.id.button_st_end);
+        startEndButton.setEnabled(true);
+
+        isRotating = true;
         slots.startRotation();
         TextView resultTextView = findViewById(R.id.result_textview);
         resultTextView.setVisibility(View.INVISIBLE);
