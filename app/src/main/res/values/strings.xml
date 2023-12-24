@@ -15,6 +15,9 @@
     <string name="replay_button">Сыграть еще раз</string>
     <string name="end_game">Закончить игру</string>
     <string name="game_over_message">Вы проиграли</string>
+    <string name="set_bet">Сделать ставку</string>
+    <string name="set">Установить</string>
+    <string name="set_new_bet">Установите размер новой ставки</string>
 
 
 </resources>

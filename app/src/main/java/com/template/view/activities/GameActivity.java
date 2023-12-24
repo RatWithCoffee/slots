@@ -17,12 +17,13 @@ import com.template.R;
 import com.template.model.GameState;
 import com.template.model.RotationResult;
 import com.template.view.components.Slots;
-import com.template.view.dialogs.DialogWindow;
+import com.template.view.dialogs.EndGameDialog;
+import com.template.view.dialogs.SetBetDialog;
 
 import java.text.DecimalFormat;
 import java.util.Objects;
 
-public class GameActivity extends AppCompatActivity implements Slots.RoundEndListener, DialogWindow.GameRestartListener {
+public class GameActivity extends AppCompatActivity implements Slots.RoundEndListener, EndGameDialog.GameRestartListener, SetBetDialog.SetBetListener {
 
     private final GameState state = new GameState();
     private final static DecimalFormat REAL_FORMATTER = new DecimalFormat("0.###");
@@ -46,6 +47,12 @@ public class GameActivity extends AppCompatActivity implements Slots.RoundEndLis
 
         slots = findViewById(R.id.slots);
         slots.setOnRoundEnd(this);
+
+        Button setBetButton = findViewById(R.id.button_set_bet);
+        setBetButton.setOnClickListener(v -> {
+            AlertDialog dialog = SetBetDialog.getDialog(this, this, state);
+            dialog.show();
+        });
 
         Button startEndButton = findViewById(R.id.button_st_end);
         startEndButton.setOnClickListener(v -> {
@@ -100,7 +107,7 @@ public class GameActivity extends AppCompatActivity implements Slots.RoundEndLis
 
 
         if (state.isGameOver()) {
-            AlertDialog dialog = DialogWindow.getDialog(this, this);
+            AlertDialog dialog = EndGameDialog.getDialog(this, this);
             dialog.show();
             isRotating = false;
             return;
@@ -109,6 +116,8 @@ public class GameActivity extends AppCompatActivity implements Slots.RoundEndLis
 //        пользователь нажал на кнопку остановки
         if (!stopRotation) {
             isRotating = false;
+            Button setBetButton = findViewById(R.id.button_set_bet);
+            setBetButton.setVisibility(View.VISIBLE);
             return;
         }
 
@@ -121,6 +130,8 @@ public class GameActivity extends AppCompatActivity implements Slots.RoundEndLis
         slots.startRotation();
         TextView resultTextView = findViewById(R.id.result_textview);
         resultTextView.setVisibility(View.INVISIBLE);
+        Button setBetButton = findViewById(R.id.button_set_bet);
+        setBetButton.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -132,6 +143,10 @@ public class GameActivity extends AppCompatActivity implements Slots.RoundEndLis
         moneyTextView.setText(REAL_FORMATTER.format(state.getSum()));
         TextView resultTextView = findViewById(R.id.result_textview);
         resultTextView.setVisibility(View.INVISIBLE);
-        Log.i("restart", "aaa");
+    }
+
+    @Override
+    public void onSetBet(int newBet) {
+        state.setBet(newBet);
     }
 }

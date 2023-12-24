@@ -2,19 +2,19 @@ package com.template.model;
 
 // описывает состояние текущей игры
 public class GameState {
-    public static final double defaultInitSum = 100;
-    public static final double defaultInitBet = 100;
+    public static final int defaultInitSum = 500;
+    public static final int defaultInitBet = 100;
 
 
-    private double sum;
-    private final double bet;
+    private int sum;
+    private int bet;
 
     public GameState() {
         this.sum = defaultInitSum;
         this.bet = defaultInitBet;
     }
 
-    public GameState(double sum, double bet) {
+    public GameState(int sum, int bet) {
         this.sum = sum;
         this.bet = bet;
     }
@@ -38,12 +38,16 @@ public class GameState {
         }
     }
 
+    public void setBet(int newBet) {
+        bet = newBet;
+    }
 
-    public double getSum() {
+
+    public int getSum() {
         return sum;
     }
 
-    public double getBet() {
+    public int getBet() {
         return bet;
     }
 

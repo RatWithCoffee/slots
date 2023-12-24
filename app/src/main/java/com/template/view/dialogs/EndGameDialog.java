@@ -7,7 +7,8 @@ import android.widget.Button;
 
 import com.template.R;
 
-public class DialogWindow {
+
+public class EndGameDialog {
 
 
     public interface GameRestartListener {
@@ -16,6 +17,7 @@ public class DialogWindow {
 
     public static AlertDialog getDialog(Activity activity, GameRestartListener gameRestartListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+
         View view = activity.getLayoutInflater().inflate(R.layout.end_game_dialog, null);
         builder.setView(view);
         builder.setCancelable(true);
@@ -37,5 +39,9 @@ public class DialogWindow {
         });
 
         return alertDialog;
+
+
     }
+
+
 }
