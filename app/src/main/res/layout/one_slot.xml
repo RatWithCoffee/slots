@@ -9,13 +9,13 @@
         android:id="@+id/current_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/slot1" />
+        android:src="@drawable/ico_1" />
 
     <ImageView
         android:id="@+id/next_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/slot1" />
+        android:src="@drawable/ico_1" />
 
 
 </FrameLayout>

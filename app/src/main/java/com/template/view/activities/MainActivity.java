@@ -3,6 +3,7 @@ package com.template.view.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        Button startButton = findViewById(R.id.button_start);
+        ImageButton startButton = findViewById(R.id.button_start);
         startButton.setOnClickListener(view -> {
             Intent intent = new Intent(view.getContext(), GameActivity.class);
             view.getContext().startActivity(intent);

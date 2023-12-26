@@ -21,8 +21,8 @@ public class OneSlot extends FrameLayout {
     // количество остановившихся слотов
 //    private static int numberOfStoppedSlots;
 
-    private static final int[] images = {R.drawable.slot1, R.drawable.slot2, R.drawable.slot3, R.drawable.slot4,
-            R.drawable.slot5, R.drawable.slot6};
+    private static final int[] images = {R.drawable.ico_1, R.drawable.ico_2, R.drawable.ico_3, R.drawable.ico_4,
+            R.drawable.ico_5, R.drawable.ico_6,  R.drawable.ico_7,  R.drawable.ico_8};
 
     public ImageView currentImage, nextImage;
 
