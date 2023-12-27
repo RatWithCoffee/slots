@@ -45,7 +45,7 @@ public class Slots extends LinearLayout implements OneSlot.RotationEndListener {
 
     public void init(Context context) {
         LayoutInflater.from(context).inflate(R.layout.slots, this);
-        int[] imageIds = {R.id.image1, R.id.image2, R.id.image3};
+        int[] imageIds = {R.id.slot1, R.id.slot2, R.id.slot3};
         slots = new OneSlot[3];
         for (int i = 0; i < slots.length; i++) {
             slots[i] = findViewById(imageIds[i]);
@@ -70,16 +70,16 @@ public class Slots extends LinearLayout implements OneSlot.RotationEndListener {
         numberOfStoppedSlots++;
         // если все три слота закончили вращение
         if (slots.length == numberOfStoppedSlots) {
-            if (slots[0].getTag().equals(slots[1].getTag()) && slots[0].getTag().equals(slots[2].getTag())) {
-                onRoundEndListener.onRoundEnd(RotationResult.JACKPOT, getResources().getString(R.string.jackpot));
-            } else if (slots[0].getTag().equals(slots[1].getTag())
-                    || slots[0].getTag().equals(slots[2].getTag())
-                    || slots[1].getTag().equals(slots[2].getTag())
-            ) {
-                onRoundEndListener.onRoundEnd(RotationResult.SMALL_JACKPOT, getResources().getString(R.string.small_jackpot));
-            } else {
-                onRoundEndListener.onRoundEnd(RotationResult.LOSS, getResources().getString(R.string.loss));
-            }
+//            if (slots[0].getTag().equals(slots[1].getTag()) && slots[0].getTag().equals(slots[2].getTag())) {
+//                onRoundEndListener.onRoundEnd(RotationResult.JACKPOT, getResources().getString(R.string.jackpot));
+//            } else if (slots[0].getTag().equals(slots[1].getTag())
+//                    || slots[0].getTag().equals(slots[2].getTag())
+//                    || slots[1].getTag().equals(slots[2].getTag())
+//            ) {
+//                onRoundEndListener.onRoundEnd(RotationResult.SMALL_JACKPOT, getResources().getString(R.string.small_jackpot));
+//            } else {
+//                onRoundEndListener.onRoundEnd(RotationResult.LOSS, getResources().getString(R.string.loss));
+//            }
             onRoundEndListener.onRoundEnd(RotationResult.LOSS, getResources().getString(R.string.loss));
             numberOfStoppedSlots = 0;
         }

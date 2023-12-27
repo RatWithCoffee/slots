@@ -6,6 +6,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,7 +25,7 @@ public class OneSlot extends FrameLayout {
     private static final int[] images = {R.drawable.ico_1, R.drawable.ico_2, R.drawable.ico_3, R.drawable.ico_4,
             R.drawable.ico_5, R.drawable.ico_6,  R.drawable.ico_7,  R.drawable.ico_8};
 
-    public ImageView currentImage, nextImage;
+    public LinearLayout currentImage, nextImage;
 
     public final Random RANDOM = new Random();
 
@@ -57,8 +58,8 @@ public class OneSlot extends FrameLayout {
     // инициализация обьекта класса
     private void init(Context context) {
         LayoutInflater.from(context).inflate(R.layout.one_slot, this);
-        currentImage = getRootView().findViewById(R.id.current_image);
-        nextImage = getRootView().findViewById(R.id.next_image);
+        currentImage = getRootView().findViewById(R.id.current_slot);
+        nextImage = getRootView().findViewById(R.id.next_slot);
         nextImage.setTranslationY(getHeight());
     }
 
@@ -113,9 +114,9 @@ public class OneSlot extends FrameLayout {
     }
 
     // меняет изображение ImageView
-    private void setImage(ImageView imageView, int value) {
-        imageView.setImageResource(images[value]);
-        this.setTag(value);
+    private void setImage(LinearLayout imageView, int value) {
+//        imageView.setImageResource(images[value]);
+//        this.setTag(value);
     }
 
     // устанавливает событие, происходящие по завершению вращения

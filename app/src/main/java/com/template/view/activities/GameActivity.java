@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -42,8 +41,6 @@ public class GameActivity extends AppCompatActivity implements Slots.RoundEndLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-        createToolBar();
-
 
         slots = findViewById(R.id.slots);
         slots.setOnRoundEnd(this);
@@ -54,7 +51,7 @@ public class GameActivity extends AppCompatActivity implements Slots.RoundEndLis
             dialog.show();
         });
 
-        Button startEndButton = findViewById(R.id.button_st_end);
+        Button startEndButton = findViewById(R.id.auto_spin_button);
         startEndButton.setOnClickListener(v -> {
             if (SystemClock.elapsedRealtime() - mLastClickTime < 1000) {
                 return;
@@ -84,16 +81,6 @@ public class GameActivity extends AppCompatActivity implements Slots.RoundEndLis
         });
     }
 
-
-    private void createToolBar() {
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-        TextView moneyTextView = findViewById(R.id.textView_money);
-        moneyTextView.setText(REAL_FORMATTER.format(state.getSum()));
-    }
 
     public void onRoundEnd(RotationResult rotationResult, String message) {
         TextView moneyTextView = findViewById(R.id.textView_money);
@@ -136,7 +123,7 @@ public class GameActivity extends AppCompatActivity implements Slots.RoundEndLis
 
     @Override
     public void onGameRestart() {
-        Button startEndButton = findViewById(R.id.button_st_end);
+        Button startEndButton = findViewById(R.id.auto_spin_button);
         startEndButton.setText(R.string.start_rotation_button);
         state.restartGame();
         TextView moneyTextView = findViewById(R.id.textView_money);
