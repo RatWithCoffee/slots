@@ -2,7 +2,9 @@ package com.template.view.components;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
@@ -10,12 +12,14 @@ import androidx.annotation.Nullable;
 import com.template.R;
 import com.template.model.RotationResult;
 
+import java.util.Arrays;
+
 public class Slots extends LinearLayout implements OneSlot.RotationEndListener {
     private OneSlot[] slots;
 
     private int numberOfStoppedSlots;
 
-   private RoundEndListener onRoundEndListener;
+    private RoundEndListener onRoundEndListener;
 
     public interface RoundEndListener {
         void onRoundEnd(RotationResult rotationResult, String messageId);
@@ -45,10 +49,10 @@ public class Slots extends LinearLayout implements OneSlot.RotationEndListener {
 
     public void init(Context context) {
         LayoutInflater.from(context).inflate(R.layout.slots, this);
-        int[] imageIds = {R.id.slot1, R.id.slot2, R.id.slot3};
-        slots = new OneSlot[3];
+        int[] slotIds = {R.id.slot1, R.id.slot2, R.id.slot3, R.id.slot4};
+        slots = new OneSlot[slotIds.length];
         for (int i = 0; i < slots.length; i++) {
-            slots[i] = findViewById(imageIds[i]);
+            slots[i] = findViewById(slotIds[i]);
             slots[i].setRotationEndHandler(this);
         }
     }
@@ -68,21 +72,57 @@ public class Slots extends LinearLayout implements OneSlot.RotationEndListener {
     @Override
     public void onRotationEnd() {
         numberOfStoppedSlots++;
-        // если все три слота закончили вращение
+        int numOfImagesInSlot = 4;
+        int[][] grid = new int[slots.length][numOfImagesInSlot];
+        // если все слоты закончили вращение
         if (slots.length == numberOfStoppedSlots) {
-//            if (slots[0].getTag().equals(slots[1].getTag()) && slots[0].getTag().equals(slots[2].getTag())) {
-//                onRoundEndListener.onRoundEnd(RotationResult.JACKPOT, getResources().getString(R.string.jackpot));
-//            } else if (slots[0].getTag().equals(slots[1].getTag())
-//                    || slots[0].getTag().equals(slots[2].getTag())
-//                    || slots[1].getTag().equals(slots[2].getTag())
-//            ) {
-//                onRoundEndListener.onRoundEnd(RotationResult.SMALL_JACKPOT, getResources().getString(R.string.small_jackpot));
-//            } else {
-//                onRoundEndListener.onRoundEnd(RotationResult.LOSS, getResources().getString(R.string.loss));
-//            }
+            for (int i = 0; i < numOfImagesInSlot; i++) {
+                grid[i] = slots[i].getImagesTags();
+
+            }
+            grid = transpose(grid);
+            for (int[] line: grid) {
+                handleResultForOneLine(line);
+            }
+
+
             onRoundEndListener.onRoundEnd(RotationResult.LOSS, getResources().getString(R.string.loss));
             numberOfStoppedSlots = 0;
         }
+    }
+
+    public static int[][] transpose(int[][] matrix) {
+        int rows = matrix.length;
+        int cols = matrix[0].length;
+
+        int[][] transposed = new int[cols][rows];
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                transposed[j][i] = matrix[i][j];
+            }
+        }
+
+        return transposed;
+    }
+    private void handleResultForOneLine(int[] tags) {
+        int num = getNumOfDistinctStrings(tags);
+
+        if (num == 1) {
+            onRoundEndListener.onRoundEnd(RotationResult.JACKPOT, getResources().getString(R.string.jackpot));
+            Log.i("result", "JACKPOT");
+        } else if (num == 2) {
+            onRoundEndListener.onRoundEnd(RotationResult.SMALL_JACKPOT, getResources().getString(R.string.small_jackpot));
+            Log.i("result", "SMALL_JACKPOT");
+        } else {
+            onRoundEndListener.onRoundEnd(RotationResult.LOSS, getResources().getString(R.string.loss));
+            Log.i("result", "LOSS");
+        }
+
+    }
+
+    private int getNumOfDistinctStrings(int[] tags) {
+        return (int) java.util.Arrays.stream(tags).distinct().count();
     }
 
 

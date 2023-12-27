@@ -17,8 +17,9 @@ import java.util.Random;
 
 // класс-отображение для одного слота
 public class OneSlot extends FrameLayout {
-    // время за которое происходит одно вращение
-    private static final int ANIMATION_DURATION = 300;
+    // максимальное разница между количеством вращений у разных линий
+    private static final int MAX_ROTATION_NUMBER = 5;
+    private static final int ANIMATION_DURATION = 1000;
     // количество остановившихся слотов
 //    private static int numberOfStoppedSlots;
 
@@ -65,14 +66,17 @@ public class OneSlot extends FrameLayout {
 
     // запускает вращение
     public void startRotation() {
-        int imageIndex = RANDOM.nextInt(images.length);
-        int numOfRotation = RANDOM.nextInt(4) + 5000 / ANIMATION_DURATION;
+        int[] imageIndex = new int[4];
+        for (int i = 0; i < imageIndex.length; i++) {
+            imageIndex[i] = RANDOM.nextInt(images.length);
+        }
+        int numOfRotation = RANDOM.nextInt(MAX_ROTATION_NUMBER) + 10;
 
-        setImage(nextImage, imageIndex);
+        setSlotLineImages(imageIndex, false);
         rotate(imageIndex, numOfRotation);
     }
 
-    private void rotate(int imageIndex, int numOfRotation) {
+    private void rotate(int[] imageIndex, int numOfRotation) {
         currentImage.animate().translationY(-getHeight()).setDuration(ANIMATION_DURATION).start();
         nextImage.setTranslationY(nextImage.getHeight());
         nextImage.animate().translationY(0).setDuration(ANIMATION_DURATION)
@@ -84,16 +88,19 @@ public class OneSlot extends FrameLayout {
 
                     @Override
                     public void onAnimationEnd(@NonNull Animator animator) {
-                        setImage(currentImage, imageIndex);
+                        setSlotLineImages(imageIndex ,true);
                         currentImage.setTranslationY(0);
                         if (currRotation != numOfRotation) { // запускаем следующее вращение
                             currRotation++;
-                            int newInd = RANDOM.nextInt(images.length);
-                            setImage(nextImage, newInd);
+                            int[] newInd = new int[4];
+                            for (int i = 0; i < imageIndex.length; i++) {
+                                newInd[i] = RANDOM.nextInt(images.length);
+                            }
+                            setSlotLineImages(newInd,false);
                             rotate(newInd, numOfRotation);
                         } else { // останавливаем вращение
                             currRotation = 0;
-                            setImage(nextImage, imageIndex);
+                            setSlotLineImages(imageIndex,false);
                             rotationEndListener.onRotationEnd();
                         }
 
@@ -113,10 +120,38 @@ public class OneSlot extends FrameLayout {
 
     }
 
+    public int[] getImagesTags() {
+        int[] imageIds = new int[]{R.id.curr_image1, R.id.curr_image2, R.id.curr_image3, R.id.curr_image4};
+        int[] retTags = new int[imageIds.length];
+        for (int i = 0; i < retTags.length; i++) {
+            ImageView imageView = findViewById(imageIds[i]);
+            retTags[i] = (Integer) imageView.getTag();
+        }
+        return retTags;
+    }
+
     // меняет изображение ImageView
-    private void setImage(LinearLayout imageView, int value) {
-//        imageView.setImageResource(images[value]);
-//        this.setTag(value);
+    private void setSlotLineImages(int[] newInd, boolean currSlotLine) {
+        int[] imageIds;
+        if (currSlotLine) {
+            imageIds = new int[]{R.id.curr_image1, R.id.curr_image2, R.id.curr_image3, R.id.curr_image4};
+        } else {
+            imageIds = new int[]{R.id.next_image1, R.id.next_image2, R.id.next_image3, R.id.next_image4};
+        }
+
+        for (int i = 0; i < imageIds.length; i++) {
+            ImageView imageView = findViewById(imageIds[i]);
+            imageView.setImageResource(images[newInd[i]]);
+            imageView.setTag(newInd[i]);
+        }
+
+    }
+
+    private void setRandomImage(int id) {
+        int valueRand = RANDOM.nextInt(images.length);
+        ImageView imageView = findViewById(id);
+        imageView.setImageResource(images[valueRand]);
+        this.setTag(valueRand);
     }
 
     // устанавливает событие, происходящие по завершению вращения
