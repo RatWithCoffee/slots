@@ -5,13 +5,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
 import com.template.R;
@@ -22,7 +18,6 @@ import com.template.view.dialogs.EndGameDialog;
 import com.template.view.dialogs.SetBetDialog;
 
 import java.text.DecimalFormat;
-import java.util.Objects;
 
 public class GameActivity extends AppCompatActivity implements Slots.RoundEndListener, EndGameDialog.GameRestartListener, SetBetDialog.SetBetListener {
 
@@ -36,7 +31,6 @@ public class GameActivity extends AppCompatActivity implements Slots.RoundEndLis
     private boolean stopRotation = false;
     private boolean isRotating = false;
 
-    private long mLastClickTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,81 +49,81 @@ public class GameActivity extends AppCompatActivity implements Slots.RoundEndLis
 
         ImageButton autoSpinButton = findViewById(R.id.auto_spin_button);
         autoSpinButton.setOnClickListener(v -> {
-            if (SystemClock.elapsedRealtime() - mLastClickTime < 1000) {
-                return;
-            }
-            mLastClickTime = SystemClock.elapsedRealtime();
+            onAutoSpinClick(autoSpinButton);
+        });
 
+        ImageButton spinButton = findViewById(R.id.spin_button);
+        spinButton.setOnClickListener(v -> {
+            onSpinClick();
+        });
+    }
 
+    private void onSpinClick() {
+        if (isRotating && !stopRotation) {
+            return;
+        }
+
+        stopRotation = !stopRotation;
+        if (stopRotation) {
+            stopRotation = false;
+            startRotation();
+        }
+    }
+
+    private void onAutoSpinClick(ImageButton autoSpinButton) {
 //            stopRotation = false -> пользователь захотел остановить игру
 //            stopRotation = true -> пользователь захотел начать игру
 
 //            если во время вращения пользователь остановил игру,
 //            то приложение не дает ему во время того же вращения игру снова начать
-            if (isRotating && !stopRotation) {
-                return;
-            }
+        if (isRotating && !stopRotation) {
+            return;
+        }
 
-            stopRotation = !stopRotation;
-            if (stopRotation) {
-                autoSpinButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.bott_stopauto));
-                startRotation();
-            } else {
-                autoSpinButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.bott_auto));
-
-
-            }
-
-
-        });
+        stopRotation = !stopRotation;
+        if (stopRotation) {
+            autoSpinButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.bott_stopauto));
+            startRotation();
+        } else {
+            autoSpinButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.bott_auto));
+        }
     }
 
 
+
+
+
     public void onRoundEnd(RotationResult rotationResult, String message) {
-//        TextView moneyTextView = findViewById(R.id.textView_money);
-//        state.changeSum(rotationResult);
-//        moneyTextView.setText(REAL_FORMATTER.format(state.getSum()));
-//
-//        moneyTextView.setText(REAL_FORMATTER.format(state.getSum()));
-
-
-//        if (state.isGameOver()) {
-//            AlertDialog dialog = EndGameDialog.getDialog(this, this);
-//            dialog.show();
-//            isRotating = false;
-//            return;
-//        }
+        if (state.isGameOver()) {
+            AlertDialog dialog = EndGameDialog.getDialog(this, this);
+            dialog.show();
+            isRotating = false;
+            return;
+        }
 
 //        пользователь нажал на кнопку остановки
-//        if (!stopRotation) {
-//            isRotating = false;
-////            Button setBetButton = findViewById(R.id.button_set_bet);
-////            setBetButton.setVisibility(View.VISIBLE);
-//            return;
-//        }
-//
-//        new Handler(Looper.getMainLooper()).postDelayed(this::startRotation, TIME_BETWEEN_ROTATIONS);
+        if (!stopRotation) {
+            isRotating = false;
+            return;
+        }
+
+        new Handler(Looper.getMainLooper()).postDelayed(this::startRotation, TIME_BETWEEN_ROTATIONS);
     }
 
 
     public void startRotation() {
         isRotating = true;
         slots.startRotation();
-//        Button setBetButton = findViewById(R.id.button_set_bet);
-//        setBetButton.setVisibility(View.INVISIBLE);
     }
 
-    @Override
-    public void onGameRestart() {
-//        Button startEndButton = findViewById(R.id.auto_spin_button);
-//        startEndButton.setText(R.string.start_rotation_button);
-//        state.restartGame();
-//        TextView moneyTextView = findViewById(R.id.textView_money);
-//        moneyTextView.setText(REAL_FORMATTER.format(state.getSum()));
-    }
 
     @Override
     public void onSetBet(int newBet) {
         state.setBet(newBet);
+    }
+
+    @Override
+    public void onGameRestart() {
+
     }
 }
