@@ -16,7 +16,7 @@
 
 
         <ImageButton
-            android:id="@+id/increase_bet_button"
+            android:id="@+id/decrease_bet_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/start_rotation_button"
@@ -29,16 +29,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:textSize="40sp"
-            android:textStyle="bold"
+            android:textSize="30sp"
+            android:textStyle="normal"
+            android:text="1000"
             app:layout_constraintEnd_toEndOf="parent"
+            android:gravity="center"
             android:background="@drawable/bet_value"
             />
 
 
 
         <ImageButton
-            android:id="@+id/decrease_bet_button"
+            android:id="@+id/increase_bet_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/start_rotation_button"

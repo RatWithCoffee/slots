@@ -37,7 +37,7 @@
             />
 
         <ImageButton
-            android:id="@+id/bet_button"
+            android:id="@+id/set_bet_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/start_rotation_button"

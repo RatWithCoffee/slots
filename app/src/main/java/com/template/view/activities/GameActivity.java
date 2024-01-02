@@ -4,8 +4,9 @@ import android.app.AlertDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.SystemClock;
+import android.util.Log;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -17,12 +18,11 @@ import com.template.view.components.Slots;
 import com.template.view.dialogs.EndGameDialog;
 import com.template.view.dialogs.SetBetDialog;
 
-import java.text.DecimalFormat;
+import java.util.Locale;
 
 public class GameActivity extends AppCompatActivity implements Slots.RoundEndListener, EndGameDialog.GameRestartListener, SetBetDialog.SetBetListener {
 
     private final GameState state = new GameState();
-    private final static DecimalFormat REAL_FORMATTER = new DecimalFormat("0.###");
 
     private static final int TIME_BETWEEN_ROTATIONS = 1500;
 
@@ -40,12 +40,10 @@ public class GameActivity extends AppCompatActivity implements Slots.RoundEndLis
 
         slots = findViewById(R.id.slots);
         slots.setOnRoundEnd(this);
-//
-//        Button setBetButton = findViewById(R.id.button_set_bet);
-//        setBetButton.setOnClickListener(v -> {
-//            AlertDialog dialog = SetBetDialog.getDialog(this, this, state);
-//            dialog.show();
-//        });
+
+        TextView moneyTextView = findViewById(R.id.money_textview);
+        moneyTextView.setText(String.format(Locale.ENGLISH, "%08d", state.getSum()));
+
 
         ImageButton autoSpinButton = findViewById(R.id.auto_spin_button);
         autoSpinButton.setOnClickListener(v -> {
@@ -56,18 +54,46 @@ public class GameActivity extends AppCompatActivity implements Slots.RoundEndLis
         spinButton.setOnClickListener(v -> {
             onSpinClick();
         });
+
+
+        TextView betTextView = findViewById(R.id.bet_textview);
+        betTextView.setText(String.valueOf(state.getBet()));
+
+        betTextView.setText(String.valueOf(state.getBet()));
+
+        ImageButton setBetButton = findViewById(R.id.set_bet_button);
+        setBetButton.setOnClickListener(v -> {
+            if (!isRotating) {
+                state.setBet();
+            }
+        });
+
+        ImageButton increaseBetButton = findViewById(R.id.increase_bet_button);
+        increaseBetButton.setOnClickListener(v -> {
+            if (!isRotating) {
+                state.increaseNewBet();
+                betTextView.setText(String.valueOf(state.getNewBet()));
+                Log.i("inc", String.valueOf(state.getNewBet()));
+            }
+        });
+
+        ImageButton decreaseBetButton = findViewById(R.id.decrease_bet_button);
+        decreaseBetButton.setOnClickListener(v -> {
+            if (!isRotating) {
+                state.decreaseNewBet();
+                betTextView.setText(String.valueOf(state.getNewBet()));
+            }
+        });
     }
 
     private void onSpinClick() {
-        if (isRotating && !stopRotation) {
+        if (isRotating) {
             return;
         }
 
-        stopRotation = !stopRotation;
-        if (stopRotation) {
-            stopRotation = false;
-            startRotation();
-        }
+        stopRotation = false;
+        startRotation();
+
     }
 
     private void onAutoSpinClick(ImageButton autoSpinButton) {
@@ -90,10 +116,12 @@ public class GameActivity extends AppCompatActivity implements Slots.RoundEndLis
     }
 
 
+    public void onRoundEnd(RotationResult rotationResult) {
+        state.changeSum(rotationResult);
+        TextView moneyTextView = findViewById(R.id.money_textview);
+        moneyTextView.setText(String.format(Locale.ENGLISH, "%08d", state.getSum()));
 
 
-
-    public void onRoundEnd(RotationResult rotationResult, String message) {
         if (state.isGameOver()) {
             AlertDialog dialog = EndGameDialog.getDialog(this, this);
             dialog.show();
@@ -107,19 +135,23 @@ public class GameActivity extends AppCompatActivity implements Slots.RoundEndLis
             return;
         }
 
+
         new Handler(Looper.getMainLooper()).postDelayed(this::startRotation, TIME_BETWEEN_ROTATIONS);
     }
 
 
     public void startRotation() {
         isRotating = true;
+        state.setNewBet();
+        TextView betTextView = findViewById(R.id.bet_textview);
+        betTextView.setText(String.valueOf(state.getBet()));
         slots.startRotation();
     }
 
 
     @Override
     public void onSetBet(int newBet) {
-        state.setBet(newBet);
+//        state.setBet(newBet);
     }
 
     @Override

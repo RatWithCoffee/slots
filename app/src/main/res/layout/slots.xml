@@ -42,14 +42,17 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/bet_textview"
+        android:id="@+id/money_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:textColor="@color/white"
-        android:textSize="40sp"
-        android:textStyle="bold"
+        android:textSize="30sp"
+        android:textStyle="normal"
         android:background="@drawable/money"
+        android:text="00000000"
+        android:gravity="end|center"
+        android:paddingEnd="18dp"
         />
 
 

@@ -22,7 +22,7 @@ public class Slots extends LinearLayout implements OneSlot.RotationEndListener {
     private RoundEndListener onRoundEndListener;
 
     public interface RoundEndListener {
-        void onRoundEnd(RotationResult rotationResult, String messageId);
+        void onRoundEnd(RotationResult rotationResult);
     }
 
 
@@ -74,7 +74,6 @@ public class Slots extends LinearLayout implements OneSlot.RotationEndListener {
         numberOfStoppedSlots++;
         int numOfImagesInSlot = 4;
         int[][] grid = new int[slots.length][numOfImagesInSlot];
-//        handleResultForOneLine(grid[0]);
         // если все слоты закончили вращение
         if (slots.length == numberOfStoppedSlots) {
             for (int i = 0; i < numOfImagesInSlot; i++) {
@@ -83,12 +82,10 @@ public class Slots extends LinearLayout implements OneSlot.RotationEndListener {
             }
             grid = transpose(grid);
             for (int[] line: grid) {
-//                Log.i("line", Arrays.toString(line));
                 handleResultForOneLine(line);
             }
 
 
-//            onRoundEndListener.onRoundEnd(RotationResult.LOSS, getResources().getString(R.string.loss));
             numberOfStoppedSlots = 0;
         }
     }
@@ -111,14 +108,14 @@ public class Slots extends LinearLayout implements OneSlot.RotationEndListener {
         int num = getNumOfDistinctStrings(tags);
 
         if (num == 1) {
-            onRoundEndListener.onRoundEnd(RotationResult.JACKPOT, getResources().getString(R.string.jackpot));
-//            Log.i("result", "JACKPOT");
+            onRoundEndListener.onRoundEnd(RotationResult.JACKPOT);
+            Log.i("result", "JACKPOT");
         } else if (num == 2) {
-            onRoundEndListener.onRoundEnd(RotationResult.SMALL_JACKPOT, getResources().getString(R.string.small_jackpot));
-//            Log.i("result", "SMALL_JACKPOT");
+            onRoundEndListener.onRoundEnd(RotationResult.SMALL_JACKPOT);
+            Log.i("result", "SMALL_JACKPOT");
         } else {
-            onRoundEndListener.onRoundEnd(RotationResult.LOSS, getResources().getString(R.string.loss));
-//            Log.i("result", "LOSS");
+            onRoundEndListener.onRoundEnd(RotationResult.LOSS);
+            Log.i("result", "LOSS");
         }
 
     }
