@@ -16,11 +16,10 @@ import com.template.model.GameState;
 import com.template.model.RotationResult;
 import com.template.view.components.Slots;
 import com.template.view.dialogs.EndGameDialog;
-import com.template.view.dialogs.SetBetDialog;
 
 import java.util.Locale;
 
-public class GameActivity extends AppCompatActivity implements Slots.RoundEndListener, EndGameDialog.GameRestartListener, SetBetDialog.SetBetListener {
+public class GameActivity extends AppCompatActivity implements Slots.RoundEndListener, EndGameDialog.GameRestartListener {
 
     private final GameState state = new GameState();
 
@@ -64,7 +63,7 @@ public class GameActivity extends AppCompatActivity implements Slots.RoundEndLis
         ImageButton setBetButton = findViewById(R.id.set_bet_button);
         setBetButton.setOnClickListener(v -> {
             if (!isRotating) {
-                state.setBet();
+                state.updateBet();
             }
         });
 
@@ -73,7 +72,6 @@ public class GameActivity extends AppCompatActivity implements Slots.RoundEndLis
             if (!isRotating) {
                 state.increaseNewBet();
                 betTextView.setText(String.valueOf(state.getNewBet()));
-                Log.i("inc", String.valueOf(state.getNewBet()));
             }
         });
 
@@ -124,6 +122,7 @@ public class GameActivity extends AppCompatActivity implements Slots.RoundEndLis
 
         if (state.isGameOver()) {
             AlertDialog dialog = EndGameDialog.getDialog(this, this);
+            Log.i("show dialog", "show");
             dialog.show();
             isRotating = false;
             return;
@@ -142,20 +141,20 @@ public class GameActivity extends AppCompatActivity implements Slots.RoundEndLis
 
     public void startRotation() {
         isRotating = true;
-        state.setNewBet();
+        state.dropNewBet();
         TextView betTextView = findViewById(R.id.bet_textview);
         betTextView.setText(String.valueOf(state.getBet()));
         slots.startRotation();
     }
 
 
-    @Override
-    public void onSetBet(int newBet) {
-//        state.setBet(newBet);
-    }
 
     @Override
     public void onGameRestart() {
-
+        state.restartGame();
+        TextView betTextView = findViewById(R.id.bet_textview);
+        betTextView.setText(String.valueOf(state.getBet()));
+        TextView moneyTextView = findViewById(R.id.money_textview);
+        moneyTextView.setText(String.format(Locale.ENGLISH, "%08d", state.getSum()));
     }
 }

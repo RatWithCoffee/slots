@@ -4,7 +4,7 @@ import android.util.Log;
 
 // описывает состояние текущей игры
 public class GameState {
-    public static final int defaultInitSum = 5000;
+    public static final int defaultInitSum = 100;
     public static final int defaultInitBet = 100;
 
     private int newBet;
@@ -53,11 +53,11 @@ public class GameState {
         Log.i("de", String.valueOf(bet));
     }
 
-    public void setBet() {
+    public void updateBet() {
         bet = newBet;
     }
 
-    public void setNewBet() {
+    public void dropNewBet() {
         newBet = bet;
     }
 
@@ -75,6 +75,9 @@ public class GameState {
     }
 
     public void restartGame() {
+        bet = defaultInitBet;
         sum = defaultInitSum;
+        newBet = bet;
     }
+
 }

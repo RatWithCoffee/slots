@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.template.R;
 
@@ -24,18 +25,11 @@ public class EndGameDialog {
 
         AlertDialog alertDialog = builder.create();
 
-        Button replayButton = view.findViewById(R.id.replay_button);
-        Button endButton = view.findViewById(R.id.end_button);
+        ImageButton replayButton = view.findViewById(R.id.replay_button);
 
         replayButton.setOnClickListener((v) -> {
             alertDialog.dismiss();
             gameRestartListener.onGameRestart();
-        });
-
-        endButton.setOnClickListener((v) -> {
-            alertDialog.dismiss();
-            activity.finish();
-
         });
 
         return alertDialog;
