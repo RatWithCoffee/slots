@@ -43,6 +43,11 @@ public class GameActivity extends AppCompatActivity implements Slots.RoundEndLis
         TextView moneyTextView = findViewById(R.id.money_textview);
         moneyTextView.setText(String.format(Locale.ENGLISH, "%08d", state.getSum()));
 
+        ImageButton backButton = findViewById(R.id.back_button);
+        backButton.setOnClickListener(v -> {
+            this.finish();
+        });
+
 
         ImageButton autoSpinButton = findViewById(R.id.auto_spin_button);
         autoSpinButton.setOnClickListener(v -> {
@@ -114,8 +119,10 @@ public class GameActivity extends AppCompatActivity implements Slots.RoundEndLis
     }
 
 
-    public void onRoundEnd(RotationResult rotationResult) {
-        state.changeSum(rotationResult);
+    public void onRoundEnd(RotationResult[] rotationResult) {
+        for (RotationResult res : rotationResult) {
+            state.changeSum(res);
+        }
         TextView moneyTextView = findViewById(R.id.money_textview);
         moneyTextView.setText(String.format(Locale.ENGLISH, "%08d", state.getSum()));
 
@@ -156,5 +163,7 @@ public class GameActivity extends AppCompatActivity implements Slots.RoundEndLis
         betTextView.setText(String.valueOf(state.getBet()));
         TextView moneyTextView = findViewById(R.id.money_textview);
         moneyTextView.setText(String.format(Locale.ENGLISH, "%08d", state.getSum()));
+        stopRotation = false;
+        isRotating = false;
     }
 }

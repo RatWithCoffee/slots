@@ -2,17 +2,13 @@ package com.template.view.components;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
 
 import com.template.R;
 import com.template.model.RotationResult;
-
-import java.util.Arrays;
 
 public class Slots extends LinearLayout implements OneSlot.RotationEndListener {
     private OneSlot[] slots;
@@ -22,7 +18,7 @@ public class Slots extends LinearLayout implements OneSlot.RotationEndListener {
     private RoundEndListener onRoundEndListener;
 
     public interface RoundEndListener {
-        void onRoundEnd(RotationResult rotationResult);
+        void onRoundEnd(RotationResult[] rotationResult);
     }
 
 
@@ -81,10 +77,12 @@ public class Slots extends LinearLayout implements OneSlot.RotationEndListener {
 
             }
             grid = transpose(grid);
-            for (int[] line: grid) {
-                handleResultForOneLine(line);
+            RotationResult[] results = new RotationResult[4];
+            for (int i = 0; i < results.length; i++) {
+                results[i] = handleResultForOneLine(grid[i]);
             }
 
+            onRoundEndListener.onRoundEnd(results);
 
             numberOfStoppedSlots = 0;
         }
@@ -104,18 +102,16 @@ public class Slots extends LinearLayout implements OneSlot.RotationEndListener {
 
         return transposed;
     }
-    private void handleResultForOneLine(int[] tags) {
+
+    private RotationResult handleResultForOneLine(int[] tags) {
         int num = getNumOfDistinctStrings(tags);
 
         if (num == 1) {
-            onRoundEndListener.onRoundEnd(RotationResult.JACKPOT);
-            Log.i("result", "JACKPOT");
+            return RotationResult.JACKPOT;
         } else if (num == 2) {
-            onRoundEndListener.onRoundEnd(RotationResult.SMALL_JACKPOT);
-            Log.i("result", "SMALL_JACKPOT");
+            return RotationResult.SMALL_JACKPOT;
         } else {
-            onRoundEndListener.onRoundEnd(RotationResult.LOSS);
-            Log.i("result", "LOSS");
+            return RotationResult.LOSS;
         }
 
     }

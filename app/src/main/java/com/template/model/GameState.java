@@ -1,10 +1,8 @@
 package com.template.model;
 
-import android.util.Log;
-
 // описывает состояние текущей игры
 public class GameState {
-    public static final int defaultInitSum = 100;
+    public static final int defaultInitSum = 1000;
     public static final int defaultInitBet = 100;
 
     private int newBet;
@@ -19,11 +17,6 @@ public class GameState {
         this.bet = defaultInitBet;
     }
 
-    public GameState(int sum, int bet) {
-        this.sum = sum;
-        this.bet = bet;
-    }
-
     public boolean isGameOver() {
         return sum < bet;
     }
@@ -32,10 +25,10 @@ public class GameState {
     public void changeSum(RotationResult rotationResult) {
         switch (rotationResult) {
             case JACKPOT:
-                sum += 2 * bet;
+                sum += 10 * bet;
                 break;
             case SMALL_JACKPOT:
-                sum += bet;
+                sum += 5 * bet;
                 break;
             case LOSS:
                 sum -= bet;
@@ -44,13 +37,15 @@ public class GameState {
     }
 
     public void increaseNewBet() {
-        newBet += betChangeSize;
-        Log.i("inc", String.valueOf(bet));
+        if (newBet + betChangeSize <= sum) {
+            newBet += betChangeSize;
+        }
     }
 
     public void decreaseNewBet() {
-        newBet -= betChangeSize;
-        Log.i("de", String.valueOf(bet));
+        if (newBet - betChangeSize > 0) {
+            newBet -= betChangeSize;
+        }
     }
 
     public void updateBet() {
